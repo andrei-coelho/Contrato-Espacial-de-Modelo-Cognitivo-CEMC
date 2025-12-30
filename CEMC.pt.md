@@ -119,7 +119,20 @@ O ecossistema cognitivo passa a evoluir com continuidade física e semântica.
 
 # O Contrato
 
-O contrato é construido em JSON e tem a seguinte estrutura mínima:
+O Contrato Espacial de Modelo Cognitivo (CEMC) é uma especificação formal em JSON que define as leis físicas, geométricas e semânticas do espaço vetorial onde um modelo cognitivo existe.
+
+Ele descreve:
+
+- como os dados entram no sistema
+
+- como são transformados
+
+- quais são as métricas, domínios e limites válidos
+
+- e quais projeções são fisicamente possíveis dentro do universo do modelo
+
+## Estrutura mínima
+
 
 ```ts
 {
@@ -139,19 +152,49 @@ O contrato é construido em JSON e tem a seguinte estrutura mínima:
 ```
 ## Preprocess
 
-O Preprocess pode ser descrito de maneira simplificada ou de forma mais detalhada como:
+O campo preprocess define a sequência de leis físicas aplicadas ao espaço antes do modelo existir. Lembre-se: A ordem importa.
+
+Ele pode ser descrito de duas formas:
+
+### Forma simplificada
+
+```
+preprocess: ["normalization", "whitening"]
+
+```
+Usada quando a transformação é padrão, global e sem hiperparâmetros relevantes.
+
+### Forma explícita (recomendada)
 
 ```ts
 {
-    preprocess:[
+    preprocess: [
         {
-            type:"Robust Scale",
+            type: "RobustScale",
             medianaQ2: 0.93445,
             IQR: 3.233
+        },
+        {
+            type: "Normalization",
+            norm: "L2"
+        },
+        {
+            type: "Whitening",
+            method: "PCA"
         },
         ... // outros preprocessamentos
     ],
     ...
 ```
 
-Importante deixar as variáveis bem claras para identificação instantanea
+Aqui o contrato passa a definir explicitamente:
+
+- métricas do espaço
+
+- fatores de escala
+
+- sistemas de coordenadas
+
+- e as leis que governam projeção e ortogonalização
+
+Isso torna o espaço reprodutível, auditável, versionável e migrável.
